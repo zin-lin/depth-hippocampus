@@ -1,0 +1,7 @@
+# Install torch separately first via conda for CUDA 12.8:
+# conda install pytorch pytorch-cuda=12.8 -c pytorch -c nvidia
+
+numpy>=1.26.0
+matplotlib>=3.8.0
+scipy>=1.12.0
+tqdm>=4.66.0

@@ -1,0 +1,15 @@
+name: hippocampus
+prefix: /users/40542237/.conda/envs/hippocampus
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pytorch
+  - pytorch-cuda=12.4
+  - numpy>=1.26.0
+  - matplotlib>=3.8.0
+  - scipy>=1.12.0
+  - tqdm>=4.66.0
