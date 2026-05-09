@@ -110,21 +110,12 @@ class MultiHeadAttention(nn.Module):
             batch_size, seq_len, self.num_heads, self.d_head * height * width
         )
 
-        # Compute attention
-        # xformers has limitations: requires CUDA, fp16/bf16, and head_dim <= 256
-        # Fall back to standard attention if conditions not met
-        use_xformers = (
-            XFORMERS_AVAILABLE and
-            query.is_cuda and  # Must be on GPU
-            self.d_head * height * width <= 256  # Head dimension limit
-        )
-
-        if use_xformers:
+        # Compute attention — use xformers if available and on CUDA, fall back otherwise
+        if XFORMERS_AVAILABLE and query.is_cuda:
             try:
                 context = sdpa_attention(query, key, value, LowerTriangularMask())
                 attn = None
             except (NotImplementedError, RuntimeError):
-                # Fall back if xformers fails
                 context, attn = self._standard_attention(query, key, value, mask)
         else:
             context, attn = self._standard_attention(query, key, value, mask)

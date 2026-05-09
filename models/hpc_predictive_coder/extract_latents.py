@@ -48,19 +48,23 @@ def load_rgb_frames(rgb_dir):
     return np.array(frames)  # [T, 3, H, W]
 
 
-def extract_latents(model, frames, seq_len=10, device='cuda', is_rgb=False):
+def extract_latents(model, frames, seq_len=10, device='cuda', is_rgb=False, stride=1, step=1):
     model.eval()
     T = len(frames)
-    N = T - seq_len + 1
+    # step > 1 means we sample every `step` frames within the window,
+    # so the actual frame span is seq_len * step
+    span = seq_len * step
+    starts = range(0, T - span + 1, stride)
+    N = len(starts)
 
     latents_pooled = []
     latents_flat = []
 
-    print(f"\nExtracting latents: {N} windows (stride=1, seq_len={seq_len})")
+    print(f"\nExtracting latents: {N} windows (stride={stride}, seq_len={seq_len}, step={step}, span={span})")
 
     with torch.no_grad():
-        for i in tqdm(range(N), desc="Extracting"):
-            window = frames[i : i + seq_len]  # [seq_len, (C,) H, W]
+        for i in tqdm(starts, desc="Extracting"):
+            window = frames[i : i + span : step]  # [seq_len, (C,) H, W]
             window_tensor = torch.from_numpy(window).float()
 
             if is_rgb:
@@ -92,6 +96,9 @@ def main():
     parser.add_argument('--odom_file', type=str, required=True)
     parser.add_argument('--output_dir', type=str, required=True)
     parser.add_argument('--seq_len', type=int, default=10)
+    parser.add_argument('--stride', type=int, default=1)
+    parser.add_argument('--step',   type=int, default=1,
+                        help='Frame step within window (step=2 → every 2nd frame, doubles temporal span)')
     parser.add_argument('--max_depth', type=float, default=20.0)
     parser.add_argument('--latent_dim', type=int, default=512)
     parser.add_argument('--num_heads', type=int, default=4)
@@ -115,7 +122,7 @@ def main():
         latent_dim=args.latent_dim
     )
     checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint['model_state_dict'], strict=False)
     model = model.to(device)
     model.eval()
     print(f"   Loaded epoch {checkpoint.get('epoch', '?')}, val_loss={checkpoint.get('val_loss', '?')}")
@@ -137,10 +144,11 @@ def main():
 
     print(f"\n4. Extracting latents")
     latents_pooled, latents_flat = extract_latents(
-        model, frames, args.seq_len, device, is_rgb
+        model, frames, args.seq_len, device, is_rgb, args.stride, args.step
     )
 
-    positions = positions_all[args.seq_len - 1:]
+    span = args.seq_len * args.step
+    positions = positions_all[[s + span - 1 for s in range(0, len(positions_all) - span + 1, args.stride)]]
     assert len(latents_pooled) == len(positions), \
         f"Mismatch: {len(latents_pooled)} latents vs {len(positions)} positions"
 

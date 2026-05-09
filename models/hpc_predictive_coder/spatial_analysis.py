@@ -76,7 +76,8 @@ def main():
     print(f"\noffset={args.offset}, neighborhood={args.neighborhood}")
     all_pos_raw, all_lat_raw = [], []
     for i, (lat, pos) in enumerate(zip(lat_arrays, pos_arrays)):
-        L = min(args.max_L, len(lat) - args.offset)
+        #L = min(args.max_L, len(lat) - args.offset)
+        L = 1200
         print(f"\n  [{i+1}/{len(lat_arrays)}] L={L} frames")
         print(f"  Computing physical distances...")
         pr = accm_distances_raw(pos, args.offset, args.neighborhood, L)
@@ -134,10 +135,10 @@ def main():
     alpha, beta = result.x
     print(f"\nRegression: {alpha:.3f} * log(d) + {beta:.3f}")
 
-    # Correlation
+    # Correlation — log Pearson matches ACCM's reported metric (their r=0.827)
     from scipy.stats import pearsonr
-    r, p = pearsonr(position_dists[mask], latent_dists[mask])
-    print(f"Pearson r = {r:.4f}, p = {p:.2e}")
+    r, p = pearsonr(np.log(position_dists[mask]), latent_dists[mask])
+    print(f"Pearson r = {r:.4f}, p = {p:.2e}  [log, ACCM-comparable]")
 
     d_fit = np.linspace(max(position_dists.min(), 1e-3), position_dists.max(), 300)
     l_fit = alpha * np.log(d_fit) + beta
@@ -172,9 +173,9 @@ def main():
     result_crop = minimize(weighted_log_loss_crop, [1.0, 0.0])
     a2, b2 = result_crop.x
 
-    r2, _ = pearsonr(pos_log, lat_log)
+    r2, _ = pearsonr(np.log(pos_log), lat_log)
     print(f"Log plot regression: {a2:.3f} * log(d) + {b2:.3f}")
-    print(f"Log plot Pearson r = {r2:.4f}")
+    print(f"Log plot Pearson r = {r2:.4f}  [log, ACCM-comparable]")
 
     d_fit2 = np.linspace(pos_log.min(), pos_log.max(), 300)
     l_fit2 = a2 * np.log(d_fit2) + b2

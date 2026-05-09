@@ -21,7 +21,7 @@ def load_depth_frame(path, max_depth=20.0):
     depth = np.load(path).astype(np.float32)
     if depth.ndim == 2:
         depth = depth[np.newaxis]
-    depth = np.where(np.isinf(depth), max_depth, depth)
+    depth = np.where(np.isinf(depth) | np.isnan(depth), max_depth, depth)
     depth = np.clip(depth, 0, max_depth) / max_depth
     return depth  # (1, H, W)
 
@@ -46,9 +46,9 @@ def main():
     parser.add_argument('--mode', type=str, default='depth', choices=['depth', 'rgb'],
                         help='Input modality')
     parser.add_argument('--seq_len', type=int, default=10)
-    parser.add_argument('--latent_dim', type=int, default=512)
+    parser.add_argument('--latent_dim', type=int, default=128)
     parser.add_argument('--max_depth', type=float, default=20.0)
-    parser.add_argument('--fps', type=float, default=5.5)
+    parser.add_argument('--fps', type=float, default=55.0)
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('-n', type=int, default=None,
                         help='Sample N random windows instead of sequential playback')
@@ -68,7 +68,7 @@ def main():
         latent_dim=args.latent_dim
     ).to(device)
     ckpt = torch.load(args.checkpoint, map_location=device, weights_only=False)
-    model.load_state_dict(ckpt['model_state_dict'])
+    model.load_state_dict(ckpt['model_state_dict'], strict=False)
     model.eval()
     print(f"Loaded checkpoint (epoch {ckpt['epoch']}, val_loss={ckpt['val_loss']:.6f})")
 

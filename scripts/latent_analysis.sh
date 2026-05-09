@@ -6,10 +6,15 @@
 set -e
 
 # Defaults
-DIM=512
+DIM=128
 MODE=depth
 CHECKPOINT=""
+NEIGH=60
+OFFSET=12
 SKIP=0
+STRIDE=1
+SEQ_LEN=10
+STEP=1
 
 # First positional arg is the rec suffix
 REC_SUFFIX=$1
@@ -18,9 +23,14 @@ shift
 # Parse remaining flags
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --dim)   DIM="$2";        shift 2 ;;
-        --mode)  MODE="$2";       shift 2 ;;
+        --dim)        DIM="$2";        shift 2 ;;
+        --mode)       MODE="$2";       shift 2 ;;
+        --n)          NEIGH="$2";      shift 2 ;;
         --checkpoint) CHECKPOINT="$2"; shift 2 ;;
+        --stride)     STRIDE="$2";     shift 2 ;;
+        --seq_len)    SEQ_LEN="$2";    shift 2 ;;
+        --step)       STEP="$2";       shift 2 ;;
+        --offset)     OFFSET="$2";     shift 2 ;;
         --skip)       SKIP=1;          shift ;;
         *) echo "Unknown arg: $1"; exit 1 ;;
     esac
@@ -90,7 +100,10 @@ else
         ${MODE_FLAG} \
         --odom_file "${ODOM}" \
         --output_dir "${OUTPUT_DIR}" \
-        --latent_dim "${DIM}"
+        --latent_dim "${DIM}" \
+        --seq_len "${SEQ_LEN}" \
+        --stride "${STRIDE}" \
+        --step "${STEP}"
 fi
 
 # Step 2: Spatial analysis
@@ -99,8 +112,7 @@ python3 models/hpc_predictive_coder/spatial_analysis.py \
     --latents "${OUTPUT_DIR}/latents_flat.npy" \
     --positions "${OUTPUT_DIR}/positions.npy" \
     --output "${OUTPUT_DIR}/spatial_analysis.png" \
-    --neighborhood 30 \
-    --offset 52 \
+    --neighborhood ${NEIGH} \
+    --offset ${OFFSET} \
     
-
 echo -e "\nDone. Results saved to ${OUTPUT_DIR}/"

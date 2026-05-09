@@ -115,7 +115,7 @@ def main(args):
     best_val_loss = float('inf')
     if args.resume and Path(args.resume).exists():
         ckpt = torch.load(args.resume, map_location=device, weights_only=False)
-        model.load_state_dict(ckpt['model_state_dict'])
+        model.load_state_dict(ckpt['model_state_dict'], strict=False)
         start_epoch = ckpt['epoch'] + 1
         best_val_loss = ckpt.get('val_loss', float('inf'))
         print(f"Resumed from epoch {start_epoch}, val_loss={best_val_loss:.6f}")

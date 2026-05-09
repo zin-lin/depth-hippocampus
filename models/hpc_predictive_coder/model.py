@@ -72,12 +72,6 @@ class HPCPredictiveCoder(nn.Module):
         self.attention_2 = MultiHeadAttention(latent_dim, num_heads)
         self.ffn_2 = FFN(latent_dim, latent_dim)
 
-        # Causal mask
-        self.register_buffer(
-            "mask",
-            torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
-        )
-
         self.position = PositionalEncoding(latent_dim, dropout)
         self._initialize_weights()
 
@@ -91,8 +85,11 @@ class HPCPredictiveCoder(nn.Module):
 
     def _apply_temporal_attention(self, f: Tensor) -> Tensor:
         """Shared attention pipeline used by forward() and get_latents()."""
+        L = f.shape[1]
+        mask = torch.triu(torch.ones(L, L, device=f.device), diagonal=1).bool()
+
         residual = f
-        f, _ = self.attention_1(f, f, f, self.mask)
+        f, _ = self.attention_1(f, f, f, mask)
         f = f + residual
         f = F.layer_norm(f, f.shape[1:])
 
@@ -101,7 +98,7 @@ class HPCPredictiveCoder(nn.Module):
         f = F.layer_norm(f, f.shape[1:])
 
         residual = f
-        f, _ = self.attention_2(f, f, f, self.mask)
+        f, _ = self.attention_2(f, f, f, mask)
         f = f + residual
         f = F.layer_norm(f, f.shape[1:])
 
