@@ -85,7 +85,7 @@ class HPCDecoder(nn.Module):
         self,
         latent_dim: int = 512,
         out_channels: int = 1,
-        layers: List[int] = [2, 2, 2, 2]
+        layers: List[int] = [2, 2, 2, 2] 
     ) -> None:
         super().__init__()
         self.latent_dim = latent_dim

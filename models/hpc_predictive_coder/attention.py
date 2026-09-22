@@ -10,14 +10,6 @@ import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
 
-try:
-    from xformers.ops import memory_efficient_attention as sdpa_attention
-    from xformers.ops import LowerTriangularMask
-    XFORMERS_AVAILABLE = True
-except ImportError:
-    XFORMERS_AVAILABLE = False
-    print("Warning: xformers not available, falling back to standard attention")
-
 
 class MultiHeadAttention(nn.Module):
     """
@@ -72,7 +64,7 @@ class MultiHeadAttention(nn.Module):
 
         Returns:
             context: Attended features (B, L, C, H, W)
-            attn: Attention weights (None if using xformers)
+            attn: Always None — torch's fused SDPA kernel never materializes attention weights
         """
         batch_size = value.size(0)
         seq_len = value.size(1)
@@ -110,65 +102,50 @@ class MultiHeadAttention(nn.Module):
             batch_size, seq_len, self.num_heads, self.d_head * height * width
         )
 
-        # Compute attention — use xformers if available and on CUDA, fall back otherwise
-        if XFORMERS_AVAILABLE and query.is_cuda:
-            try:
-                context = sdpa_attention(query, key, value, LowerTriangularMask())
-                attn = None
-            except (NotImplementedError, RuntimeError):
-                context, attn = self._standard_attention(query, key, value, mask)
-        else:
-            context, attn = self._standard_attention(query, key, value, mask)
+        context = self._sdpa(query, key, value, mask)
 
         # Reshape back to spatial format
         context = context.view(
             batch_size, seq_len, self.num_heads * self.d_head, height, width
         )
 
-        return context, attn
+        return context, None
 
-    def _standard_attention(
+    def _sdpa(
         self,
         query: Tensor,
         key: Tensor,
         value: Tensor,
         mask: Optional[Tensor] = None
-    ) -> Tuple[Tensor, Tensor]:
+    ) -> Tensor:
         """
-        Standard scaled dot-product attention (fallback when xformers not available).
+        torch's native fused scaled-dot-product attention (flash-attention backend
+        on supported GPUs, falls back to an equivalent math kernel otherwise).
 
         Args:
             query: (B, L, H, D)
             key: (B, L, H, D)
             value: (B, L, H, D)
-            mask: Optional mask (L, L)
+            mask: Optional mask (L, L), True = block that (query, key) position —
+                  inverted internally, since torch's boolean attn_mask convention
+                  is True = allowed to attend.
 
         Returns:
             context: Attended values (B, L, H, D)
-            attn: Attention weights (B, H, L, L)
         """
-        B, L, H, D = query.shape
-
-        # Transpose for batched matrix multiplication: (B, H, L, D)
+        # (B, L, H, D) -> (B, H, L, D), torch SDPA's expected layout
         query = query.transpose(1, 2)
         key = key.transpose(1, 2)
         value = value.transpose(1, 2)
 
-        # Scaled dot-product attention
-        scores = torch.matmul(query, key.transpose(-2, -1)) / (D ** 0.5)
-
-        # Apply causal mask
+        attn_mask = None
         if mask is not None:
-            mask = mask.to(scores.device)
-            scores = scores.masked_fill(mask.unsqueeze(0).unsqueeze(0), float('-inf'))
+            attn_mask = ~mask.to(device=query.device, dtype=torch.bool)
 
-        attn = F.softmax(scores, dim=-1)
-        context = torch.matmul(attn, value)
+        context = F.scaled_dot_product_attention(query, key, value, attn_mask=attn_mask)
 
-        # Transpose back: (B, L, H, D)
-        context = context.transpose(1, 2).contiguous()
-
-        return context, attn
+        # (B, H, L, D) -> (B, L, H, D)
+        return context.transpose(1, 2).contiguous()
 
 
 class PositionalEncoding(nn.Module):
