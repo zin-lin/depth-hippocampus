@@ -1,0 +1,35 @@
+Map eval, Set B, input=depth, stride=10/seq_len=10, Pearson = log distance
+
+#### Pearson (log) ####
+model                                      15     16     17     18     19     20     21     23     24    MEAN
+VPC-RGB-Depth-fp32                      0.594  0.735  0.662  0.711  0.777  0.778  0.753  0.827  0.673  0.7231
+TwoHead-RGB-Depth-bf16 MAP              0.630  0.768  0.733  0.780  0.836  0.782  0.772  0.879  0.663  0.7604
+VJEPA-Hybrid-RGB-Depth-bf16             0.544  0.549  0.554  0.629  0.693  0.640  0.608  0.733  0.719  0.6297
+VJEPA-ViT-RGB-Depth-bf16                0.493  0.685  0.640  0.598  0.673  0.609  0.684  0.775  0.651  0.6455
+Random-VPC-arch (5-seed floor)          0.492  0.482  0.587  0.593  0.678  0.560  0.656  0.667  0.680  0.5994  ±0.0149 (seed SD)
+Random-TwoHead-arch (5-seed floor)      0.481  0.534  0.609  0.622  0.706  0.563  0.672  0.665  0.714  0.6182  ±0.0111 (seed SD)
+Random-VJEPA-arch (5-seed floor)        0.519  0.610  0.546  0.650  0.711  0.676  0.694  0.753  0.700  0.6509  ±0.0199 (seed SD)
+Random-VJEPAViT-arch (5-seed floor)     0.407  0.676  0.600  0.568  0.641  0.637  0.697  0.659  0.565  0.6056  ±0.0044 (seed SD)
+
+#### MI ####
+model                                      15     16     17     18     19     20     21     23     24    MEAN
+VPC-RGB-Depth-fp32                      0.429  0.662  0.605  0.811  0.783  0.667  0.625  0.899  0.507  0.6653
+TwoHead-RGB-Depth-bf16 MAP              0.435  0.619  0.584  0.699  0.779  0.652  0.823  1.204  0.507  0.7000
+VJEPA-Hybrid-RGB-Depth-bf16             0.476  0.689  0.534  0.722  0.657  0.568  0.607  1.011  0.725  0.6653
+VJEPA-ViT-RGB-Depth-bf16                0.349  0.509  0.472  0.439  0.487  0.390  0.535  0.691  0.469  0.4823
+Random-VPC-arch (5-seed floor)          0.448  0.548  0.584  0.697  0.648  0.466  0.574  0.665  0.505  0.5706  ±0.0102 (seed SD)
+Random-TwoHead-arch (5-seed floor)      0.421  0.575  0.578  0.676  0.715  0.424  0.586  0.581  0.623  0.5754  ±0.0112 (seed SD)
+Random-VJEPA-arch (5-seed floor)        0.458  0.639  0.480  0.556  0.693  0.598  0.680  0.856  0.695  0.6282  ±0.0232 (seed SD)
+Random-VJEPAViT-arch (5-seed floor)     0.390  0.594  0.545  0.529  0.635  0.512  0.626  0.497  0.447  0.5306  ±0.0065 (seed SD)
+
+#### paired tests over the 9 recordings ####
+VJEPA-ViT-RGB-Depth-bf16 vs VJEPA-Hybrid-RGB-Depth-bf16:
+    Pearson +0.0157 wins 4/9 (t p=0.528, W p=0.57) | MI -0.1830 wins 0/9 (t p=0.00029, W p=0.00391)
+VPC-RGB-Depth-fp32 vs Random-VPC-arch (5-seed floor):
+    Pearson +0.1237 wins 8/9 (t p=0.00141, W p=0.00781) | MI +0.0947 wins 8/9 (t p=0.0121, W p=0.0117)
+TwoHead-RGB-Depth-bf16 MAP vs Random-TwoHead-arch (5-seed floor):
+    Pearson +0.1422 wins 8/9 (t p=0.00113, W p=0.00781) | MI +0.1246 wins 8/9 (t p=0.123, W p=0.0547)
+VJEPA-Hybrid-RGB-Depth-bf16 vs Random-VJEPA-arch (5-seed floor):
+    Pearson -0.0212 wins 3/9 (t p=0.121, W p=0.164) | MI +0.0371 wins 6/9 (t p=0.21, W p=0.301)
+VJEPA-ViT-RGB-Depth-bf16 vs Random-VJEPAViT-arch (5-seed floor):
+    Pearson +0.0399 wins 7/9 (t p=0.0376, W p=0.0391) | MI -0.0483 wins 2/9 (t p=0.197, W p=0.164)

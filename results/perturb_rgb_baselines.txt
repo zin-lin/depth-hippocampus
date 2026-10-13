@@ -1,0 +1,31 @@
+Perturbation test, Set B, input=rgb, stride 10. Clean column = absolute; others = retention (perturbed/clean)
+
+#### Pearson (log) retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.532    0.948    1.061    0.810    0.633    1.007    0.879
+TwoHead-RGB-RGB-bf16 MAP                  0.604    0.893    1.038    0.765    0.283    1.040    1.023
+YOLO11m-COCO-RGB                          0.494    0.797    0.923    0.778    0.682    0.991    0.965
+FasterRCNN-R50-COCO-RGB                   0.582    0.891    0.958    0.804    0.767    0.999    0.996
+DINOv2-B-RGB                              0.429    0.958    0.918    0.846    0.890    1.004    1.159
+NetVLAD-Pitts30k-RGB                      0.742    0.866    0.947    0.875    0.570    0.990    0.972
+AnyLoc-DINOv2B-RGB                        0.714    0.926    0.978    0.928    0.836    0.997    0.977
+
+#### MI retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.286    0.941    1.251    0.650    0.572    1.435    0.859
+TwoHead-RGB-RGB-bf16 MAP                  0.347    0.832    1.082    0.633    0.187    1.153    1.050
+YOLO11m-COCO-RGB                          0.286    0.678    1.060    0.635    0.560    1.014    0.970
+FasterRCNN-R50-COCO-RGB                   0.411    0.773    0.925    0.591    0.620    0.996    0.988
+DINOv2-B-RGB                              0.251    0.823    0.822    0.744    0.859    1.014    1.259
+NetVLAD-Pitts30k-RGB                      0.530    0.822    0.952    0.720    0.395    0.968    0.953
+AnyLoc-DINOv2B-RGB                        0.584    0.855    0.854    0.810    0.717    1.003    0.981
+
+#### latent shift (lower = more stable) ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.000    0.175    0.448    0.448    0.729    0.951    0.454
+TwoHead-RGB-RGB-bf16 MAP                  0.000    0.530    0.674    0.467    0.905    0.711    0.542
+YOLO11m-COCO-RGB                          0.000    0.977    1.233    0.542    1.392    0.190    0.529
+FasterRCNN-R50-COCO-RGB                   0.000    0.816    1.115    0.529    1.553    0.334    0.383
+DINOv2-B-RGB                              0.000    1.034    1.143    0.347    0.950    0.090    0.487
+NetVLAD-Pitts30k-RGB                      0.000    0.963    0.924    0.527    1.086    0.417    0.532
+AnyLoc-DINOv2B-RGB                        0.000    0.865    0.949    0.447    0.934    0.184    0.415

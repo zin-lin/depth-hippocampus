@@ -1,0 +1,15 @@
+Loop closure, recs=['rec_wh_05', 'rec_wh_06'], input=rgb, stride=10
+revisit-eligible queries: rec_wh_05=1034/1913  rec_wh_06=492/1618
+
+model                                     R@1     AP  alias@1  medErr_m
+VPC-RGB-RGB-fp32                        0.071  0.050    0.625     22.05
+TwoHead-RGB-RGB-bf16 MAP                0.079  0.051    0.620     21.90
+TwoHead-RGB-RGB-bf16 LC                 0.018  0.008    0.729     24.64
+NetVLAD-Pitts30k-RGB                    0.136  0.173    0.488     14.31
+AnyLoc-DINOv2B-RGB                      0.154  0.210    0.463     12.74
+NetVLAD-FT-RGB-RGB                      0.157  0.206    0.448     12.30
+AnyLoc-FT-RGB-RGB                       0.168  0.241    0.399     10.56
+
+chance R@1 (fraction of earlier candidates within 2.0 m, over eligible queries):
+  rec_wh_05: 0.0115
+  rec_wh_06: 0.0069

@@ -47,11 +47,13 @@ class JEPAEncoderPair(nn.Module):
         in_channels: int = 1,
         layers: List[int] = [2, 2, 2, 2],
         latent_dim: int = 128,
+        stem_channels: int = 64,
+        num_stages: int = None,
     ) -> None:
         super().__init__()
         self.latent_dim = latent_dim
 
-        self.context_encoder = HPCEncoder(in_channels, layers, latent_dim)
+        self.context_encoder = HPCEncoder(in_channels, layers, latent_dim, stem_channels, num_stages)
         self.target_encoder = copy.deepcopy(self.context_encoder)
         for p in self.target_encoder.parameters():
             p.requires_grad = False

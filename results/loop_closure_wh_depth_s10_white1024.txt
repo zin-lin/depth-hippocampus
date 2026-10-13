@@ -1,0 +1,17 @@
+Loop closure, recs=['rec_wh_05', 'rec_wh_06'], input=depth, stride=10, whiten=1024
+revisit-eligible queries: rec_wh_05=1033/1929  rec_wh_06=489/1631
+
+model                                     R@1     AP  alias@1  medErr_m
+VPC-RGB-Depth-fp32                      0.114  0.193    0.585     19.82
+TwoHead-RGB-Depth-bf16 MAP              0.119  0.178    0.596     20.71
+TwoHead-RGB-Depth-bf16 LC               0.110  0.149    0.603     21.18
+VPC-Depth-Depth-fp32                    0.105  0.195    0.590     20.29
+FasterRCNN-R50-COCO-Depth               0.158  0.297    0.548     18.02
+NetVLAD-Pitts30k-Depth                  0.147  0.332    0.548     17.61
+AnyLoc-DINOv2B-Depth                    0.156  0.280    0.512     15.75
+NetVLAD-FT-RGB-Depth                    0.142  0.298    0.549     17.69
+AnyLoc-FT-RGB-Depth                     0.143  0.255    0.517     16.22
+
+chance R@1 (fraction of earlier candidates within 2.0 m, over eligible queries):
+  rec_wh_05: 0.0114
+  rec_wh_06: 0.0070

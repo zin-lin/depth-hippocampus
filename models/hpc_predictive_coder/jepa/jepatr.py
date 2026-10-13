@@ -134,21 +134,39 @@ class JEPATR(nn.Module):
         z = self.encoders.encode_target(x.reshape(B * L, C, H, W))
         return z.reshape(B, L, z.shape[1], z.shape[2], z.shape[3])
 
-    def forward(self, x: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(self, x: Tensor, return_full: bool = False):
         """
         Args:
             x: (B, L, C, 64, 64)
+            return_full: also return (a) the raw per-frame context-encoder
+                         output (B, L, latent_dim, 8, 8) -- BEFORE the causal
+                         predictor mixes frames together, each position's
+                         encoding depends only on its own frame, no temporal
+                         context -- and (b) the predictor's FULL, unshifted
+                         output (B, L, latent_dim, 8, 8), before the `[:, :-1]`
+                         slice. Returned here (rather than recomputed
+                         separately) so callers applying a temporal-rank loss
+                         to either stage (see jepa/train.py's
+                         temporal_rank_loss) don't re-run the encoder/predictor.
         Returns:
             predicted: (B, L-1, latent_dim, 8, 8) — predictor output at position i
                        (saw frames 1..i causally), trained to match frame i+1's target
             target:    (B, L-1, latent_dim, 8, 8) — stop-gradient target latents,
                        frames 2..L (i.e. shifted by one to line up with predicted)
+            z_ctx (only if return_full=True): (B, L, latent_dim, 8, 8), per-frame,
+                       no temporal mixing -- NOT the same tensor as `predicted`.
+            predicted_full (only if return_full=True): (B, L, latent_dim, 8, 8),
+                       the predictor's output at every position, unshifted --
+                       the same tensor get_latents() returns, for a rank loss
+                       on the stage the downstream Pearson eval actually reads.
         """
         z_ctx = self._encode_context_sequence(x)
         predicted = self._predict(z_ctx)
 
         z_tgt = self._encode_target_sequence(x)
 
+        if return_full:
+            return predicted[:, :-1], z_tgt[:, 1:], z_ctx, predicted
         return predicted[:, :-1], z_tgt[:, 1:]
 
     def get_latents(self, x: Tensor) -> Tensor:

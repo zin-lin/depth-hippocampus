@@ -1,0 +1,28 @@
+Perturbation test, Set B, input=rgb, stride 10. Clean column = absolute; others = retention (perturbed/clean)
+
+#### Pearson (log) retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.532    0.948    1.061    0.810    0.633    1.007    0.879
+TwoHead-RGB-RGB-bf16 MAP                  0.604    0.893    1.038    0.765    0.283    1.040    1.023
+NetVLAD-Pitts30k-RGB                      0.742    0.866    0.947    0.875    0.570    0.990    0.972
+AnyLoc-DINOv2B-RGB                        0.714    0.926    0.978    0.928    0.836    0.997    0.977
+NetVLAD-FT-RGB-RGB                        0.843    0.808    0.906    0.883    0.511    0.985    0.975
+AnyLoc-FT-RGB-RGB                         0.843    0.948    0.960    0.936    0.864    1.000    0.999
+
+#### MI retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.286    0.941    1.251    0.650    0.572    1.435    0.859
+TwoHead-RGB-RGB-bf16 MAP                  0.347    0.832    1.082    0.633    0.187    1.153    1.050
+NetVLAD-Pitts30k-RGB                      0.530    0.822    0.952    0.720    0.395    0.968    0.953
+AnyLoc-DINOv2B-RGB                        0.584    0.855    0.854    0.810    0.717    1.003    0.981
+NetVLAD-FT-RGB-RGB                        0.766    0.627    0.808    0.688    0.280    0.964    0.925
+AnyLoc-FT-RGB-RGB                         0.857    0.855    0.849    0.797    0.661    0.999    0.982
+
+#### latent shift (lower = more stable) ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.000    0.175    0.448    0.448    0.729    0.951    0.454
+TwoHead-RGB-RGB-bf16 MAP                  0.000    0.530    0.674    0.467    0.905    0.711    0.542
+NetVLAD-Pitts30k-RGB                      0.000    0.963    0.924    0.527    1.086    0.417    0.532
+AnyLoc-DINOv2B-RGB                        0.000    0.865    0.949    0.447    0.934    0.184    0.415
+NetVLAD-FT-RGB-RGB                        0.000    0.922    0.901    0.550    1.068    0.333    0.509
+AnyLoc-FT-RGB-RGB                         0.000    0.789    0.846    0.506    0.887    0.133    0.366

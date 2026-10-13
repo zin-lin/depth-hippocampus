@@ -1,0 +1,19 @@
+Retrieval-protocol test, rec_wh_05/06, input=depth, stride 10 (VLAD vocab cross-fitted on the other recording)
+
+model                           variant    R@1     AP  alias@1  medErr_m
+VPC-RGB-Depth-fp32                  raw  0.134  0.134    0.571     20.08
+VPC-RGB-Depth-fp32                  l2n  0.135  0.134    0.572     19.96
+VPC-RGB-Depth-fp32                  gap  0.089  0.073    0.636     22.98
+VPC-RGB-Depth-fp32                 vlad  0.127  0.110    0.549     18.90
+TwoHead-RGB-Depth-bf16 MAP          raw  0.117  0.118    0.579     21.14
+TwoHead-RGB-Depth-bf16 MAP          l2n  0.119  0.117    0.572     20.75
+TwoHead-RGB-Depth-bf16 MAP          gap  0.084  0.058    0.631     23.40
+TwoHead-RGB-Depth-bf16 MAP         vlad  0.107  0.090    0.561     19.66
+TwoHead-RGB-Depth-bf16 LC           raw  0.122  0.103    0.592     20.63
+TwoHead-RGB-Depth-bf16 LC           l2n  0.124  0.097    0.599     21.67
+TwoHead-RGB-Depth-bf16 LC           gap  0.087  0.070    0.593     20.63
+TwoHead-RGB-Depth-bf16 LC          vlad  0.128  0.085    0.574     19.93
+VPC-Depth-Depth-fp32                raw  0.125  0.103    0.583     21.34
+VPC-Depth-Depth-fp32                l2n  0.125  0.103    0.583     21.32
+VPC-Depth-Depth-fp32                gap  0.087  0.065    0.608     21.42
+VPC-Depth-Depth-fp32               vlad  0.110  0.108    0.549     18.79

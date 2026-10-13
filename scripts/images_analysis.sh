@@ -83,7 +83,7 @@ for REC in "${RECS[@]}"; do
         echo "  [skip] ${REC} (offset=${OFFSET})"
     else
         echo -e "\n[Extract] ${REC} (offset=${OFFSET})..."
-        python3 models/hpc_predictive_coder/extract_latents.py \
+        python3 models/hpc_predictive_coder/vpc/extract_latents.py \
             --checkpoint "${CHECKPOINT}" \
             --rgb_dir    "${IMG_DIR}" \
             --odom_file  "${ODOM}" \

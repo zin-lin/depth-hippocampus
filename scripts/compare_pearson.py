@@ -33,12 +33,32 @@ def accm_distances_raw(array, offset, neighborhood, L):
     return dist[dist != 0]
 
 
-def pearson_for_recording(lat_path, pos_path, offset, neighborhood):
+def apply_pca(lat: np.ndarray, n_components: int) -> np.ndarray:
+    """Per-recording PCA via SVD (no sklearn dependency). Unsupervised --
+    fit only on this recording's own extracted latents, no position leakage."""
+    centered = lat - lat.mean(axis=0, keepdims=True)
+    _, _, Vt = np.linalg.svd(centered, full_matrices=False)
+    components = Vt[:n_components]  # (n_components, D)
+    return centered @ components.T  # (N, n_components)
+
+
+def pearson_for_recording(lat_path, pos_path, offset, neighborhood, pca_dims=None):
+    """
+    pca_dims: None (default) -- raw flat latent, unchanged behaviour, every
+    number produced before this flag existed stays reproducible. If set,
+    reduce the latent to its top `pca_dims` principal components (fit per
+    recording) before computing distances -- opt-in only, never the default.
+    """
     lat = np.load(lat_path).astype(np.float32)
     pos = np.load(pos_path).astype(np.float32)
 
     if np.any(np.isnan(lat)) or np.any(np.isnan(pos)):
         return None, "NaN in latents/positions"
+
+    if pca_dims is not None:
+        if pca_dims >= lat.shape[1]:
+            return None, f"pca_dims={pca_dims} >= latent dim {lat.shape[1]}"
+        lat = apply_pca(lat, pca_dims)
 
     L = min(MAX_L, len(lat) - offset)
     if L < neighborhood + 1:
@@ -62,6 +82,8 @@ def main():
     parser.add_argument('--recs', nargs='+', default=[f'{i:02d}' for i in range(2, 12)])
     parser.add_argument('--offset',       type=int, default=OFFSET)
     parser.add_argument('--neighborhood', type=int, default=NEIGHBORHOOD)
+    parser.add_argument('--pca', type=int, default=None,
+                        help='Reduce latents to top N principal components before scoring (opt-in, off by default)')
     parser.add_argument('--output', type=str, default='data/rgb_vs_depth_pearson.png')
     args = parser.parse_args()
 
@@ -85,14 +107,14 @@ def main():
         r_rgb = r_dep = None
 
         if rgb_lat.exists() and rgb_pos.exists():
-            r_rgb, err = pearson_for_recording(rgb_lat, rgb_pos, args.offset, args.neighborhood)
+            r_rgb, err = pearson_for_recording(rgb_lat, rgb_pos, args.offset, args.neighborhood, args.pca)
             if err:
                 print(f"  rec_{rec} RGB skipped: {err}")
         else:
             print(f"  rec_{rec} RGB: latents not found")
 
         if dep_lat.exists() and dep_pos.exists():
-            r_dep, err = pearson_for_recording(dep_lat, dep_pos, args.offset, args.neighborhood)
+            r_dep, err = pearson_for_recording(dep_lat, dep_pos, args.offset, args.neighborhood, args.pca)
             if err:
                 print(f"  rec_{rec} Depth skipped: {err}")
         else:

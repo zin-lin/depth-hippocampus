@@ -1,0 +1,19 @@
+Map eval, set_b (9 recordings), input=depth, stride=10/seq_len=10, Pearson = log distance
+
+#### Pearson (log) ####
+model                                       15      16      17      18      19      20      21      23      24    MEAN
+VPC-RGB-Depth-fp32                      0.594  0.735  0.662  0.711  0.777  0.778  0.753  0.827  0.673  0.7231
+VPC512-RGB-Depth-bf16                   0.498  0.501  0.596  0.641  0.709  0.626  0.659  0.724  0.710  0.6293
+TwoHead-RGB-Depth-bf16 MAP              0.630  0.768  0.733  0.780  0.836  0.782  0.772  0.879  0.663  0.7604
+
+#### MI ####
+model                                       15      16      17      18      19      20      21      23      24    MEAN
+VPC-RGB-Depth-fp32                      0.429  0.662  0.605  0.811  0.783  0.667  0.625  0.899  0.507  0.6653
+VPC512-RGB-Depth-bf16                   0.446  0.598  0.599  0.784  0.719  0.478  0.633  0.699  0.632  0.6207
+TwoHead-RGB-Depth-bf16 MAP              0.435  0.619  0.584  0.699  0.779  0.652  0.823  1.204  0.507  0.7000
+
+#### paired tests over the 9 recordings ####
+VPC512-RGB-Depth-bf16 vs VPC-RGB-Depth-fp32:
+    Pearson -0.0938 wins 1/9 (t p=0.0048, W p=0.00781) | MI -0.0446 wins 3/9 (t p=0.227, W p=0.25)
+VPC512-RGB-Depth-bf16 vs TwoHead-RGB-Depth-bf16 MAP:
+    Pearson -0.1311 wins 1/9 (t p=0.00122, W p=0.00781) | MI -0.0793 wins 4/9 (t p=0.248, W p=0.359)

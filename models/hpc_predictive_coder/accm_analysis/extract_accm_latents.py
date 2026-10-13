@@ -26,7 +26,7 @@ from PIL import Image
 from torchvision import transforms
 from tqdm import tqdm
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent / "vpc"))
 from model import create_hpc_predictive_coder
 
 ACCM_MEAN = [121.6697 / 255, 149.3242 / 255, 154.9510 / 255]

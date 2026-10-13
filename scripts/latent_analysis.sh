@@ -95,7 +95,7 @@ if [ "$SKIP" -eq 1 ]; then
     echo -e "\n[1/2] Skipping extraction, using existing latents in ${OUTPUT_DIR}"
 else
     echo -e "\n[1/2] Extracting latents..."
-    python3 models/hpc_predictive_coder/extract_latents.py \
+    python3 models/hpc_predictive_coder/vpc/extract_latents.py \
         --checkpoint "${CHECKPOINT}" \
         ${MODE_FLAG} \
         --odom_file "${ODOM}" \

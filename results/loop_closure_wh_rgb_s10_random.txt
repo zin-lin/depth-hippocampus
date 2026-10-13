@@ -1,0 +1,28 @@
+Loop closure, recs=['rec_wh_05', 'rec_wh_06'], input=rgb, stride=10, whiten=off
+revisit-eligible queries: rec_wh_05=1034/1913  rec_wh_06=492/1618
+
+model                                     R@1     AP  alias@1  medErr_m
+Random-VPC-arch-s0                      0.111  0.087    0.536     17.28
+Random-TwoHead-arch-s0 MAP              0.109  0.088    0.564     19.12
+Random-TwoHead-arch-s0 LC               0.111  0.088    0.562     18.84
+Random-VJEPA-arch-s0                    0.117  0.101    0.575     19.21
+Random-VPC-arch-s1                      0.114  0.098    0.549     17.63
+Random-TwoHead-arch-s1 MAP              0.095  0.079    0.572     19.88
+Random-TwoHead-arch-s1 LC               0.099  0.079    0.576     20.36
+Random-VJEPA-arch-s1                    0.121  0.104    0.580     19.17
+Random-VPC-arch-s2                      0.102  0.090    0.535     17.28
+Random-TwoHead-arch-s2 MAP              0.102  0.079    0.568     19.01
+Random-TwoHead-arch-s2 LC               0.100  0.079    0.573     19.14
+Random-VJEPA-arch-s2                    0.097  0.093    0.605     20.66
+Random-VPC-arch-s3                      0.111  0.103    0.541     17.19
+Random-TwoHead-arch-s3 MAP              0.095  0.079    0.566     19.50
+Random-TwoHead-arch-s3 LC               0.101  0.081    0.570     19.66
+Random-VJEPA-arch-s3                    0.121  0.115    0.581     19.17
+Random-VPC-arch-s4                      0.090  0.062    0.571     19.03
+Random-TwoHead-arch-s4 MAP              0.105  0.081    0.564     19.04
+Random-TwoHead-arch-s4 LC               0.107  0.083    0.564     19.29
+Random-VJEPA-arch-s4                    0.126  0.110    0.582     19.68
+
+chance R@1 (fraction of earlier candidates within 2.0 m, over eligible queries):
+  rec_wh_05: 0.0115
+  rec_wh_06: 0.0069

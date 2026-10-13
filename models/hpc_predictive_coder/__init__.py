@@ -1,1 +1,1 @@
-from .model import HPCPredictiveCoder, create_hpc_predictive_coder
+from .vpc.model import HPCPredictiveCoder, create_hpc_predictive_coder

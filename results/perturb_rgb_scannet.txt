@@ -1,0 +1,22 @@
+Perturbation test, scannet (6 recordings), input=rgb, stride 10. Clean column = absolute; others = retention (perturbed/clean)
+
+#### Pearson (log) retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.217    0.991    0.974    1.007    0.941    1.340    1.099
+TwoHead-RGB-RGB-bf16 MAP                  0.233    0.966    1.128    0.988    0.611    0.966    0.989
+NetVLAD-FT-RGB-RGB                        0.501    0.887    0.945    0.882    0.706    1.025    0.980
+AnyLoc-FT-RGB-RGB                         0.450    0.997    1.035    0.971    1.022    0.993    1.008
+
+#### MI retention ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.099    0.969    1.088    1.063    0.988    1.355    0.934
+TwoHead-RGB-RGB-bf16 MAP                  0.084    1.060    1.170    0.948    0.741    1.083    1.057
+NetVLAD-FT-RGB-RGB                        0.221    0.850    0.899    0.827    0.720    1.023    0.956
+AnyLoc-FT-RGB-RGB                         0.227    1.003    0.921    0.985    0.892    1.012    1.014
+
+#### latent shift (lower = more stable) ####
+output                                    clean    noise     blur  occlude  dropout      dim     tint
+VPC-RGB-RGB-fp32                          0.000    0.107    0.280    0.279    0.590    0.698    0.417
+TwoHead-RGB-RGB-bf16 MAP                  0.000    0.491    0.565    0.413    0.855    0.544    0.510
+NetVLAD-FT-RGB-RGB                        0.000    0.900    0.861    0.523    1.033    0.386    0.478
+AnyLoc-FT-RGB-RGB                         0.000    0.784    0.849    0.401    0.924    0.128    0.312

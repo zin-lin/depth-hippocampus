@@ -1,0 +1,29 @@
+Map eval, Set B, input=rgb, stride=10/seq_len=10, Pearson = log distance
+
+#### Pearson (log) ####
+model                                      15     16     17     18     19     20     21     23     24    MEAN
+VPC-RGB-RGB-fp32                        0.385  0.523  0.530  0.588  0.686  0.483  0.446  0.631  0.512  0.5317
+TwoHead-RGB-RGB-bf16 MAP                0.447  0.611  0.568  0.641  0.683  0.562  0.598  0.763  0.563  0.6040
+NetVLAD-Pitts30k-RGB                    0.703  0.793  0.641  0.669  0.731  0.764  0.790  0.829  0.756  0.7418
+AnyLoc-DINOv2B-RGB                      0.569  0.786  0.642  0.652  0.662  0.710  0.798  0.865  0.747  0.7143
+NetVLAD-FT-RGB-RGB                      0.750  0.852  0.806  0.872  0.893  0.852  0.837  0.895  0.826  0.8426
+AnyLoc-FT-RGB-RGB                       0.775  0.894  0.819  0.834  0.840  0.848  0.851  0.880  0.848  0.8431
+
+#### MI ####
+model                                      15     16     17     18     19     20     21     23     24    MEAN
+VPC-RGB-RGB-fp32                        0.178  0.279  0.287  0.309  0.458  0.271  0.221  0.335  0.241  0.2864
+TwoHead-RGB-RGB-bf16 MAP                0.189  0.327  0.289  0.373  0.450  0.315  0.349  0.533  0.299  0.3470
+NetVLAD-Pitts30k-RGB                    0.410  0.609  0.346  0.414  0.517  0.595  0.652  0.719  0.508  0.5302
+AnyLoc-DINOv2B-RGB                      0.444  0.636  0.466  0.509  0.557  0.497  0.682  0.936  0.531  0.5841
+NetVLAD-FT-RGB-RGB                      0.482  0.722  0.709  0.882  1.032  0.774  0.766  0.858  0.665  0.7655
+AnyLoc-FT-RGB-RGB                       0.553  0.950  0.810  0.935  0.969  0.760  0.933  1.001  0.799  0.8568
+
+#### paired tests over the 9 recordings ####
+NetVLAD-FT-RGB-RGB vs NetVLAD-Pitts30k-RGB:
+    Pearson +0.1008 wins 9/9 (t p=0.000961, W p=0.00391) | MI +0.2353 wins 9/9 (t p=0.00291, W p=0.00391)
+AnyLoc-FT-RGB-RGB vs AnyLoc-DINOv2B-RGB:
+    Pearson +0.1287 wins 9/9 (t p=0.000337, W p=0.00391) | MI +0.2727 wins 9/9 (t p=0.000156, W p=0.00391)
+TwoHead-RGB-RGB-bf16 MAP vs NetVLAD-FT-RGB-RGB:
+    Pearson -0.2386 wins 0/9 (t p=5.08e-07, W p=0.00391) | MI -0.4185 wins 0/9 (t p=6.62e-07, W p=0.00391)
+TwoHead-RGB-RGB-bf16 MAP vs AnyLoc-FT-RGB-RGB:
+    Pearson -0.2391 wins 0/9 (t p=6.47e-06, W p=0.00391) | MI -0.5098 wins 0/9 (t p=4.65e-08, W p=0.00391)

@@ -1,0 +1,25 @@
+Perturbation test, scannet (6 recordings), input=depth, stride 10. Clean column = absolute; others = retention (perturbed/clean)
+
+#### Pearson (log) retention ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.099    0.929    0.742    0.874    0.153    0.930
+TwoHead-RGB-Depth-bf16 MAP                0.112    0.501    1.331    0.899   -0.020    0.877
+NetVLAD-FT-RGB-Depth                      0.256    0.864    0.838    0.635    0.310    1.002
+AnyLoc-FT-RGB-Depth                       0.305    0.635    0.819    0.881    0.517    1.013
+VPC-Depth-Depth-fp32                      0.088    0.847    0.896    0.637    0.383    0.841
+
+#### MI retention ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.108    1.048    1.076    0.942    1.061    1.013
+TwoHead-RGB-Depth-bf16 MAP                0.083    1.053    1.016    0.954    0.710    0.964
+NetVLAD-FT-RGB-Depth                      0.118    0.876    0.827    0.742    0.649    0.984
+AnyLoc-FT-RGB-Depth                       0.140    0.792    0.875    0.876    0.701    0.965
+VPC-Depth-Depth-fp32                      0.103    1.039    0.982    0.997    0.958    1.000
+
+#### latent shift (lower = more stable) ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.000    0.149    0.583    0.188    0.767    0.223
+TwoHead-RGB-Depth-bf16 MAP                0.000    0.497    0.871    0.317    0.904    0.157
+NetVLAD-FT-RGB-Depth                      0.000    0.920    1.034    0.589    1.082    0.109
+AnyLoc-FT-RGB-Depth                       0.000    0.928    0.887    0.570    0.911    0.161
+VPC-Depth-Depth-fp32                      0.000    0.247    0.569    0.261    0.734    0.138

@@ -1,0 +1,28 @@
+Perturbation test, Set B, input=depth, stride 10. Clean column = absolute; others = retention (perturbed/clean)
+
+#### Pearson (log) retention ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.723    0.994    0.978    0.924    0.943    0.992
+TwoHead-RGB-Depth-bf16 MAP                0.760    0.940    0.987    0.951    0.744    0.995
+NetVLAD-Pitts30k-Depth                    0.776    0.956    0.937    0.825    0.780    1.005
+AnyLoc-DINOv2B-Depth                      0.729    1.018    1.004    0.921    0.943    1.001
+NetVLAD-FT-RGB-Depth                      0.742    0.953    0.986    0.754    0.871    1.000
+AnyLoc-FT-RGB-Depth                       0.737    0.920    1.039    0.826    0.916    1.003
+
+#### MI retention ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.665    0.998    1.002    0.769    0.992    0.992
+TwoHead-RGB-Depth-bf16 MAP                0.700    0.940    1.002    0.847    0.517    0.970
+NetVLAD-Pitts30k-Depth                    0.594    0.991    1.047    0.612    0.632    1.011
+AnyLoc-DINOv2B-Depth                      0.643    0.990    0.960    0.738    0.780    0.985
+NetVLAD-FT-RGB-Depth                      0.551    0.959    1.123    0.510    0.758    0.991
+AnyLoc-FT-RGB-Depth                       0.605    0.899    1.076    0.625    0.850    1.003
+
+#### latent shift (lower = more stable) ####
+output                                    clean    noise     blur  occlude  dropout    scale
+VPC-RGB-Depth-fp32                        0.000    0.120    0.272    0.249    0.526    0.227
+TwoHead-RGB-Depth-bf16 MAP                0.000    0.501    0.589    0.353    0.941    0.275
+NetVLAD-Pitts30k-Depth                    0.000    0.994    0.988    0.609    1.080    0.158
+AnyLoc-DINOv2B-Depth                      0.000    0.909    0.838    0.519    0.921    0.138
+NetVLAD-FT-RGB-Depth                      0.000    1.014    0.955    0.647    1.093    0.147
+AnyLoc-FT-RGB-Depth                       0.000    1.041    0.962    0.628    1.075    0.204
